@@ -1,0 +1,74 @@
+/* Navigation Container */
+.nav-container {
+    min-height: 100vh;
+    background-color: #f9fafb;
+}
+
+.nav-header {
+    background: #6366f1;
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+    /* border-bottom: 1px solid #e5e7eb; */
+}
+
+.nav-content {
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+}
+
+.nav-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.025em;
+    line-height: 1.4;
+    max-width: 60%;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+}
+
+/* Button Container */
+.nav-buttons-container {
+    display: flex;
+    gap: 8px;
+    /* background: rgba(255, 255, 255, 0.15); */
+    padding: 6px;
+    border-radius: 12px;
+}
+
+/* Navigation Buttons */
+.nav-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Active Button */
+.nav-button.active {
+    background: white;
+    color: #6366f1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content */
+.main-content {
+    padding: 0.5rem;
+    min-height: calc(100vh - 80px);
+}
