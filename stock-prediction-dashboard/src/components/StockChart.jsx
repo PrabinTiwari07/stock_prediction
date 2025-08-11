@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import stockAPI from '../services/stockAPI';
 import technicalIndicatorsService from '../services/technicalIndicatorsService';
+import '../styles/StockChart.css';
 
 ChartJS.register(
     CategoryScale,
@@ -23,7 +24,19 @@ ChartJS.register(
     Legend
 );
 
-const StockChart = ({ selectedStock, stockData, setStockData, loading, setLoading }) => {
+const StockChart = ({
+    selectedStock,
+    stockData,
+    setStockData,
+    loading,
+    setLoading,
+    onAddToWatchlist,
+    showWatchlistForm,
+    setShowWatchlistForm,
+    newWatchlistItem,
+    setNewWatchlistItem,
+    addToWatchlist
+}) => {
     const [timeframe, setTimeframe] = useState('1day');
     const [showIndicators, setShowIndicators] = useState(false);
     const [selectedIndicators, setSelectedIndicators] = useState(['RSI', 'MACD']);
@@ -496,6 +509,15 @@ const StockChart = ({ selectedStock, stockData, setStockData, loading, setLoadin
                     >
                         Technical Indicators
                     </button>
+                    {onAddToWatchlist && (
+                        <button
+                            onClick={onAddToWatchlist}
+                            className="watchlist-btn"
+                            title={`Add ${selectedStock} to watchlist`}
+                        >
+                            + Add to Watchlist
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -630,6 +652,94 @@ const StockChart = ({ selectedStock, stockData, setStockData, loading, setLoadin
                     </div>
                 )}
             </div>
+
+            {/* Watchlist Modal */}
+            {showWatchlistForm && (
+                <div className="stockchart-modal-overlay">
+                    <div className="stockchart-modal">
+                        <div className="stockchart-modal-header">
+                            <h3 className="stockchart-modal-title">Add to Watchlist</h3>
+                            <button
+                                onClick={() => setShowWatchlistForm(false)}
+                                className="stockchart-modal-close"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <form onSubmit={addToWatchlist} className="stockchart-modal-content">
+                            <div className="stockchart-form-fields">
+                                <div className="stockchart-form-field">
+                                    <label className="stockchart-form-label">
+                                        Stock Symbol *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g., AAPL, TSLA, MSFT"
+                                        value={newWatchlistItem.symbol}
+                                        onChange={(e) => setNewWatchlistItem({
+                                            ...newWatchlistItem,
+                                            symbol: e.target.value.toUpperCase()
+                                        })}
+                                        className="stockchart-form-input"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="stockchart-form-field">
+                                    <label className="stockchart-form-label">
+                                        Target Price (Optional)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="e.g., 150.00"
+                                        value={newWatchlistItem.target_price}
+                                        onChange={(e) => setNewWatchlistItem({
+                                            ...newWatchlistItem,
+                                            target_price: e.target.value
+                                        })}
+                                        className="stockchart-form-input"
+                                    />
+                                </div>
+
+                                <div className="stockchart-form-field">
+                                    <label className="stockchart-form-label">
+                                        Notes (Optional)
+                                    </label>
+                                    <textarea
+                                        placeholder="Why are you tracking this stock?"
+                                        value={newWatchlistItem.notes}
+                                        onChange={(e) => setNewWatchlistItem({
+                                            ...newWatchlistItem,
+                                            notes: e.target.value
+                                        })}
+                                        rows={3}
+                                        className="stockchart-form-textarea"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="stockchart-form-actions">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowWatchlistForm(false)}
+                                    className="stockchart-form-cancel"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="stockchart-form-submit"
+                                >
+                                    <span>⭐</span>
+                                    Add to Watchlist
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

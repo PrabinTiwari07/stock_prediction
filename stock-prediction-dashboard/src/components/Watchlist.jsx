@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import '../styles/Watchlist.css';
 
 const Watchlist = () => {
     const [watchlist, setWatchlist] = useState([]);
@@ -103,9 +104,9 @@ const Watchlist = () => {
     };
 
     const getPriceChangeColor = (change) => {
-        if (change > 0) return 'text-green-600';
-        if (change < 0) return 'text-red-600';
-        return 'text-gray-600';
+        if (change > 0) return 'positive';
+        if (change < 0) return 'negative';
+        return 'neutral';
     };
 
     const getPriceChangeIcon = (change) => {
@@ -115,18 +116,15 @@ const Watchlist = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="watchlist-container">
             {/* Success/Error Messages */}
             {(error || success) && (
-                <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg animate-slide-up max-w-md ${error
-                    ? 'bg-red-50 border border-red-200 text-red-800'
-                    : 'bg-green-50 border border-green-200 text-green-800'
-                    }`}>
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium">{error || success}</span>
+                <div className={`watchlist-message ${error ? 'error' : 'success'}`}>
+                    <div className="watchlist-message-content">
+                        <span className="watchlist-message-text">{error || success}</span>
                         <button
                             onClick={clearMessages}
-                            className="ml-4 text-gray-500 hover:text-gray-700 transition-colors"
+                            className="watchlist-message-close"
                         >
                             ✕
                         </button>
@@ -135,23 +133,23 @@ const Watchlist = () => {
             )}
 
             {/* Header */}
-            <header className="bg-white shadow-sm border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div className="flex-1 min-w-0">
-                            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                                ⭐ My Watchlist
+            <header className="watchlist-header">
+                <div className="watchlist-header-container">
+                    <div className="watchlist-header-content">
+                        <div className="watchlist-header-info">
+                            <h1 className="watchlist-title">
+                                My Watchlist
                             </h1>
-                            <p className="mt-2 text-gray-600">
+                            <p className="watchlist-subtitle">
                                 Track your favorite stocks and monitor price targets
                             </p>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="watchlist-header-actions">
                             <button
                                 onClick={() => setShowWatchlistForm(true)}
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                                className="watchlist-add-btn"
                             >
-                                <span className="text-lg">⭐</span>
+                                <span className="text-lg"></span>
                                 Add to Watchlist
                             </button>
                         </div>
@@ -160,122 +158,121 @@ const Watchlist = () => {
             </header>
 
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <main className="watchlist-main">
                 {loading && (
-                    <div className="text-center py-8">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                        <p className="mt-4 text-gray-600">Loading watchlist...</p>
+                    <div className="watchlist-loading">
+                        <div className="watchlist-spinner"></div>
+                        <p className="watchlist-loading-text">Loading watchlist...</p>
                     </div>
                 )}
 
                 {!loading && (
-                    <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                                📈 Tracked Stocks
+                    <div className="watchlist-card">
+                        <div className="watchlist-card-header">
+                            <h2 className="watchlist-card-title">
+                                Tracked Stocks
                             </h2>
                             {watchlist.length > 0 && (
-                                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <span className="watchlist-count-badge">
                                     {watchlist.length} stock{watchlist.length !== 1 ? 's' : ''}
                                 </span>
                             )}
                         </div>
 
-                        <div className="p-6">
-                            {watchlist.length === 0 ? (
-                                <div className="text-center py-16">
-                                    <div className="text-8xl mb-6">👀</div>
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Your watchlist is empty</h3>
-                                    <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                                        Start tracking stocks that interest you. Get real-time price updates and set target alerts.
-                                    </p>
-                                    <button
-                                        onClick={() => setShowWatchlistForm(true)}
-                                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-lg transition-colors duration-200 flex items-center gap-2 mx-auto"
-                                    >
-                                        <span className="text-lg">⭐</span>
-                                        Add Your First Stock
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                    {watchlist.map(item => (
-                                        <div key={item.id} className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-all duration-200 hover:scale-105">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-xl font-bold text-gray-900">{item.symbol}</span>
-                                                    <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                                                        STOCK
+                        <div className="watchlist-card-content">{watchlist.length === 0 ? (
+                            <div className="watchlist-empty">
+                                <div className="watchlist-empty-icon">📊</div>
+                                <h3 className="watchlist-empty-title">Your watchlist is empty</h3>
+                                <p className="watchlist-empty-text">
+                                    Start tracking stocks that interest you. Get real-time price updates and set target alerts.
+                                </p>
+                                <button
+                                    onClick={() => setShowWatchlistForm(true)}
+                                    className="watchlist-empty-btn"
+                                >
+                                    <span className="text-lg"></span>
+                                    Add Your First Stock
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="watchlist-grid">
+                                {watchlist.map(item => (
+                                    <div key={item.id} className="watchlist-item">
+                                        <div className="watchlist-item-header">
+                                            <div className="watchlist-item-symbol-container">
+                                                <span className="watchlist-item-symbol">{item.symbol}</span>
+                                                <span className="watchlist-item-badge">
+                                                    STOCK
+                                                </span>
+                                            </div>
+                                            <button
+                                                className="watchlist-item-delete"
+                                                onClick={() => deleteWatchlistItem(item.id)}
+                                                title="Remove from watchlist"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+
+                                        <div className="watchlist-item-content">
+                                            <div className="watchlist-price-row">
+                                                <span className="watchlist-price-label">Current Price</span>
+                                                <div className="watchlist-price-info">
+                                                    <div className="watchlist-current-price">
+                                                        {formatCurrency(item.current_price || 0)}
+                                                    </div>
+                                                    {item.price_change !== undefined && (
+                                                        <div className={`watchlist-price-change ${getPriceChangeColor(item.price_change)}`}>
+                                                            <span>{getPriceChangeIcon(item.price_change)}</span>
+                                                            <span>{item.price_change >= 0 ? '+' : ''}{item.price_change?.toFixed(2)}%</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {item.target_price && (
+                                                <div className="watchlist-target-row">
+                                                    <span className="watchlist-price-label">Target Price</span>
+                                                    <span className="watchlist-target-price">
+                                                        {formatCurrency(item.target_price)}
                                                     </span>
                                                 </div>
-                                                <button
-                                                    className="text-red-500 hover:text-red-700 transition-colors p-2 hover:bg-red-50 rounded-full"
-                                                    onClick={() => deleteWatchlistItem(item.id)}
-                                                    title="Remove from watchlist"
-                                                >
-                                                    Delete
-                                                </button>
+                                            )}
+
+                                            <div className={`watchlist-alert-status ${item.alert_status?.toLowerCase() === 'reached'
+                                                ? 'reached'
+                                                : item.alert_status?.toLowerCase() === 'approaching'
+                                                    ? 'approaching'
+                                                    : 'watching'
+                                                }`}>
+                                                <div className={`watchlist-alert-text ${item.alert_status?.toLowerCase() === 'reached'
+                                                    ? 'reached'
+                                                    : item.alert_status?.toLowerCase() === 'approaching'
+                                                        ? 'approaching'
+                                                        : 'watching'
+                                                    }`}>
+                                                    {item.alert_status?.toLowerCase() === 'reached' && '🎯 Target Reached!'}
+                                                    {item.alert_status?.toLowerCase() === 'approaching' && 'Approaching Target'}
+                                                    {(!item.alert_status || item.alert_status.toLowerCase() === 'watching') && 'Watching'}
+                                                </div>
                                             </div>
 
-                                            <div className="space-y-3">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-sm text-gray-600">Current Price</span>
-                                                    <div className="text-right">
-                                                        <div className="text-xl font-bold text-gray-900">
-                                                            {formatCurrency(item.current_price || 0)}
-                                                        </div>
-                                                        {item.price_change !== undefined && (
-                                                            <div className={`text-sm font-medium flex items-center justify-end gap-1 ${getPriceChangeColor(item.price_change)}`}>
-                                                                <span>{getPriceChangeIcon(item.price_change)}</span>
-                                                                <span>{item.price_change >= 0 ? '+' : ''}{item.price_change?.toFixed(2)}%</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
+                                            {item.notes && (
+                                                <div className="watchlist-notes-section">
+                                                    <p className="watchlist-notes-text">
+                                                        "{item.notes}"
+                                                    </p>
                                                 </div>
+                                            )}
 
-                                                {item.target_price && (
-                                                    <div className="flex items-center justify-between border-t pt-3">
-                                                        <span className="text-sm text-gray-600">Target Price</span>
-                                                        <span className="text-sm font-medium text-orange-600">
-                                                            {formatCurrency(item.target_price)}
-                                                        </span>
-                                                    </div>
-                                                )}
-
-                                                <div className={`p-3 rounded-lg text-center ${item.alert_status?.toLowerCase() === 'reached'
-                                                    ? 'bg-green-50 border border-green-200'
-                                                    : item.alert_status?.toLowerCase() === 'approaching'
-                                                        ? 'bg-yellow-50 border border-yellow-200'
-                                                        : 'bg-gray-50 border border-gray-200'
-                                                    }`}>
-                                                    <div className={`text-sm font-medium ${item.alert_status?.toLowerCase() === 'reached'
-                                                        ? 'text-green-800'
-                                                        : item.alert_status?.toLowerCase() === 'approaching'
-                                                            ? 'text-yellow-800'
-                                                            : 'text-gray-600'
-                                                        }`}>
-                                                        {item.alert_status?.toLowerCase() === 'reached' && '🎯 Target Reached!'}
-                                                        {item.alert_status?.toLowerCase() === 'approaching' && 'Approaching Target'}
-                                                        {(!item.alert_status || item.alert_status.toLowerCase() === 'watching') && 'Watching'}
-                                                    </div>
-                                                </div>
-
-                                                {item.notes && (
-                                                    <div className="border-t pt-3">
-                                                        <p className="text-sm text-gray-600 italic">
-                                                            "{item.notes}"
-                                                        </p>
-                                                    </div>
-                                                )}
-
-                                                <div className="text-xs text-gray-500 text-center">
-                                                    Added {new Date(item.added_date).toLocaleDateString()}
-                                                </div>
+                                            <div className="watchlist-date-added">
+                                                Added {new Date(item.added_date).toLocaleDateString()}
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                         </div>
                     </div>
                 )}
@@ -283,22 +280,22 @@ const Watchlist = () => {
 
             {/* Add to Watchlist Modal */}
             {showWatchlistForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                            <h3 className="text-xl font-bold text-gray-900">Add to Watchlist</h3>
+                <div className="watchlist-modal-overlay">
+                    <div className="watchlist-modal">
+                        <div className="watchlist-modal-header">
+                            <h3 className="watchlist-modal-title">Add to Watchlist</h3>
                             <button
                                 onClick={() => setShowWatchlistForm(false)}
-                                className="text-gray-500 hover:text-gray-700 transition-colors"
+                                className="watchlist-modal-close"
                             >
                                 ✕
                             </button>
                         </div>
 
-                        <form onSubmit={addToWatchlist} className="p-6">
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <form onSubmit={addToWatchlist} className="watchlist-modal-content">
+                            <div className="watchlist-form-fields">
+                                <div className="watchlist-form-field">
+                                    <label className="watchlist-form-label">
                                         Stock Symbol *
                                     </label>
                                     <input
@@ -309,13 +306,13 @@ const Watchlist = () => {
                                             ...newWatchlistItem,
                                             symbol: e.target.value.toUpperCase()
                                         })}
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        className="watchlist-form-input"
                                         required
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="watchlist-form-field">
+                                    <label className="watchlist-form-label">
                                         Target Price (Optional)
                                     </label>
                                     <input
@@ -327,12 +324,12 @@ const Watchlist = () => {
                                             ...newWatchlistItem,
                                             target_price: e.target.value
                                         })}
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        className="watchlist-form-input"
                                     />
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <div className="watchlist-form-field">
+                                    <label className="watchlist-form-label">
                                         Notes (Optional)
                                     </label>
                                     <textarea
@@ -343,32 +340,32 @@ const Watchlist = () => {
                                             notes: e.target.value
                                         })}
                                         rows={3}
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                                        className="watchlist-form-textarea"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex gap-3 mt-6">
+                            <div className="watchlist-form-actions">
                                 <button
                                     type="button"
                                     onClick={() => setShowWatchlistForm(false)}
-                                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200"
+                                    className="watchlist-form-cancel"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                                    className="watchlist-form-submit"
                                 >
                                     {loading ? (
                                         <>
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                            <div className="watchlist-form-submit-spinner"></div>
                                             Adding...
                                         </>
                                     ) : (
                                         <>
-                                            <span>⭐</span>
+                                            <span></span>
                                             Add to Watchlist
                                         </>
                                     )}

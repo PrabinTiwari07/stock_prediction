@@ -260,7 +260,6 @@ const PredictionPanel = ({ selectedStock, stockData, predictions, setPredictions
             </div>
 
             <div className="ai-status">
-                <h4>AI Analysis System</h4>
                 <div className="status-info">
                     <div className="status-item">
                         <span>Analysis Engine:</span>
